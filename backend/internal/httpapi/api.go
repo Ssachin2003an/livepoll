@@ -68,6 +68,7 @@ func (a *API) Router() *gin.Engine {
 	r.POST("/auth/logout", a.logout)
 	r.GET("/auth/me", a.me)
 	r.POST("/polls", a.createPoll)
+	r.GET("/auth/csrf", a.csrfToken)
 	r.GET("/polls", a.listPolls)
 	r.GET("/polls/:id", a.getPoll)
 	r.DELETE("/polls/:id", a.deletePoll)
@@ -386,6 +387,24 @@ func (a *API) ensureCSRF(c *gin.Context) {
 	if err == nil {
 		a.cookie(c, "csrf_token", token, 365*24*3600, false)
 	}
+}
+
+func (a *API) csrfToken(c *gin.Context) {
+    token, err := c.Cookie("csrf_token")
+
+    if err != nil || token == "" {
+        token, err = auth.Token()
+        if err != nil {
+            fail(c, http.StatusInternalServerError, "could not generate CSRF token")
+            return
+        }
+
+        a.cookie(c, "csrf_token", token, 365*24*3600, false)
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "csrfToken": token,
+    })
 }
 
 func (a *API) ensureVoter(c *gin.Context) bool {
