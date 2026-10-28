@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"Live Poll"},{"path":"/login","title":"Sign in"},{"path":"/signup","title":"Create account"},{"path":"/dashboard","title":"Your polls"},{"path":"/polls/new","title":"Create a poll"},{"path":"/polls/:id","title":"Live poll"}]}

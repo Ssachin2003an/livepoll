@@ -1,0 +1,82 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# JavaScript
+node_modules/
+frontend/dist/
+frontend/coverage/
+pnpm-debug.log*
+
+# Go
+backend/bin/
+backend/coverage.out
+backend/test-results/
+
+# Editors / operating systems
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.tmp
+*.tsbuildinfo
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Frontend dependencies and build output
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Backend binaries and compiled output
+backend/bin/
+backend/build/
+backend/dist/
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go workspace files (keep go.mod and go.sum tracked)
+# go.work
+# go.work.sum
+
+# Logs
+*.log
+logs/
+
+# Test and coverage output
+coverage/
+coverage.out
+.nyc_output/
+
+# Editor and operating system files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Local databases and data
+data/
+*.sqlite
+*.sqlite3

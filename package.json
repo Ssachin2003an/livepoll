@@ -1,0 +1,10 @@
+{
+  "name": "live-poll",
+  "private": true,
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "dev": "pnpm --filter frontend dev --host 0.0.0.0",
+    "build": "pnpm --filter frontend build",
+    "test": "pnpm --filter frontend test"
+  }
+}
