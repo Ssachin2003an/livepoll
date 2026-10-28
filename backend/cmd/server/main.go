@@ -21,9 +21,8 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 	if err := godotenv.Load("../.env"); err != nil {
-    slog.Error("Failed to load root .env file", "error", err)
-    os.Exit(1)
-}
+    	slog.Info("No root .env file found; using environment variables")
+	}
 
 cfg := config.Load()
 	slog.Info("MongoDB configuration",
