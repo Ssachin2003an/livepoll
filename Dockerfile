@@ -7,7 +7,7 @@ RUN pnpm install --frozen-lockfile
 COPY frontend frontend
 RUN pnpm --filter frontend build
 
-FROM golang:1.22-alpine AS backend-build
+FROM golang:1.26-alpine AS backend-build
 WORKDIR /src/backend
 COPY backend/go.mod backend/go.sum ./
 RUN go mod download
