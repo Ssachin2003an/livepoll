@@ -1,6 +1,18 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Activity, ArrowLeft, Check, LoaderCircle, Radio, Share2, Wifi, WifiOff } from 'lucide-react'
+import {
+  Activity,
+  ArrowLeft,
+  Check,
+  Copy,
+  Download,
+  LoaderCircle,
+  Radio,
+  Share2,
+  Wifi,
+  WifiOff,
+} from 'lucide-react'
+import { QRCodeSVG } from 'qrcode.react'
 import { Link, useParams } from 'react-router-dom'
 import { api, websocketURL } from '../api'
 import { useAuth } from '../auth/AuthContext'
@@ -42,6 +54,18 @@ export function PollPage() {
   const socketRef = useRef<WebSocket | null>(null)
   const seenVotes = useRef(new Set<string>())
   const owner = Boolean(user && poll?.ownerId && user.id === poll.ownerId)
+  const shareUrl = `${window.location.origin}/polls/${id}`
+
+  async function copyPollLink() {
+    try {
+      await navigator.clipboard.writeText(shareUrl)
+      setShareMessage('Poll link copied!')
+    } catch {
+      setShareMessage('Unable to copy automatically. Please copy the URL manually.')
+    }
+
+    window.setTimeout(() => setShareMessage(''), 2800)
+  }
 
   const refresh = useCallback(async () => {
     if (!id) return
@@ -295,6 +319,31 @@ export function PollPage() {
           </div>
         </section>
 
+        <div className="poll-share-card">
+          <span className="eyebrow">SHARE THIS POLL</span>
+          <p>Invite others to vote and see the live results.</p>
+
+          <div className="poll-share-link">
+            <span title={shareUrl}>{shareUrl}</span>
+
+            <button
+              type="button"
+              className="button button-primary"
+              onClick={copyPollLink}
+            >
+              <Copy size={15} /> Copy link
+            </button>
+
+            <button
+              type="button"
+              className="button button-outline"
+              onClick={share}
+            >
+              <Share2 size={15} /> Share
+            </button>
+          </div>
+        </div>
+
         <aside className="results-panel">
           <div className="results-head">
             <div><span className="eyebrow">THE ROOM SO FAR</span><h2>Live results<span>.</span></h2></div>
@@ -320,18 +369,60 @@ export function PollPage() {
           {results.totalVotes === 0 && <div className="no-votes">No votes yet. Your first response sets the signal.</div>}
           <div className="results-foot"><span className="results-lock"><Radio size={14} /> Updates appear automatically</span><span className="result-total-label">TOTAL · {results.totalVotes}</span></div>
           
-{owner && (
-  <div className="poll-manage">
-    <span className="eyebrow">POLL MANAGEMENT</span>
-    <p>Control whether new votes can come in.</p>
-    <button
-      className="button button-outline manage-button"
-      onClick={() => setStatus(poll.status === 'open' ? 'close' : 'reopen')}
-    >
-      {poll.status === 'open' ? 'Close voting' : 'Reopen voting'}
-    </button>
-  </div>
-)}
+          {owner && (
+            <div className="poll-manage">
+              <span className="eyebrow">POLL MANAGEMENT</span>
+              <p>Control whether new votes can come in.</p>
+              <button
+                className="button button-outline manage-button"
+                onClick={() => setStatus(poll.status === 'open' ? 'close' : 'reopen')}
+              >
+                {poll.status === 'open' ? 'Close voting' : 'Reopen voting'}
+              </button>
+            </div>
+          )}
+
+          <div className="poll-qr-section">
+            <span className="eyebrow">SCAN TO VOTE</span>
+            <h3>Take the poll with you.</h3>
+            <p>Scan this code with your phone camera to open the poll.</p>
+
+            <div className="poll-qr-card">
+              <QRCodeSVG
+                value={shareUrl}
+                size={180}
+                level="H"
+                title="QR code for this LivePoll"
+              />
+            </div>
+
+            <button
+              type="button"
+              className="button button-outline"
+              onClick={() => {
+                const svg = document.querySelector(
+                  '.poll-qr-card svg',
+                ) as SVGSVGElement | null
+
+                if (!svg) return
+
+                const blob = new Blob(
+                  [new XMLSerializer().serializeToString(svg)],
+                  { type: 'image/svg+xml;charset=utf-8' },
+                )
+
+                const url = URL.createObjectURL(blob)
+                const link = document.createElement('a')
+                link.href = url
+                link.download = `livepoll-${id}-qr.svg`
+                link.click()
+
+                window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+              }}
+            >
+              <Download size={15} /> Download QR
+            </button>
+          </div>
 
         </aside>
       </div>

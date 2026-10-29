@@ -3554,3 +3554,108 @@ body,
 :root[data-theme="dark"] .poll-row button:hover {
   color: #ffffff;
 }
+
+/* Share link below the voting section */
+.poll-share-card {
+  margin-top: 24px;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #dfe4eb;
+  border-radius: 6px;
+}
+
+.poll-share-card > p,
+.poll-qr-section > p {
+  color: #758090;
+  font-size: 12px;
+  line-height: 1.7;
+  margin: 8px 0 16px;
+}
+
+.poll-share-link {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.poll-share-link > span {
+  flex: 1 1 180px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #616b7a;
+  font: 11px var(--mono);
+}
+
+.poll-share-link .button {
+  flex-shrink: 0;
+  min-height: 38px;
+  font-size: 10px;
+}
+
+/* QR code beneath live results */
+.poll-qr-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+  margin-top: 24px;
+  padding: 22px 16px;
+  background: #fff;
+  border: 1px solid #dfe4eb;
+  border-radius: 6px;
+}
+
+.poll-qr-section h3 {
+  margin: 0;
+  color: #202938;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+}
+
+.poll-qr-section > p {
+  margin: 0 0 6px;
+}
+
+.poll-qr-card {
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  background: #fff;
+  border: 1px solid #e8ebf0;
+  border-radius: 8px;
+}
+
+.poll-qr-card svg {
+  display: block;
+  width: 180px;
+  height: 180px;
+  max-width: 100%;
+}
+
+.poll-qr-section > .button {
+  margin-top: 4px;
+  min-height: 40px;
+  font-size: 11px;
+}
+
+@media (max-width: 520px) {
+  .poll-share-card {
+    padding: 16px;
+  }
+
+  .poll-share-link > span {
+    flex-basis: 100%;
+    padding-bottom: 6px;
+  }
+
+  .poll-share-link .button {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .poll-qr-section {
+    padding: 20px 12px;
+  }
+}
