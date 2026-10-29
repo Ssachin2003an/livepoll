@@ -1,7 +1,17 @@
 
 import { useState, type FormEvent } from 'react'
-import { ArrowLeft, ArrowRight, Check, Copy, Plus, X } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Copy,
+  Plus,
+  X,
+  Share2,
+  Download,
+} from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
+import { QRCodeSVG } from 'qrcode.react'
 import { api } from '../api'
 
 export function CreatePollPage() {
@@ -71,35 +81,143 @@ export function CreatePollPage() {
     }
   }
 
+  const shareUrl = `${window.location.origin}/polls/${createdId}`
+
   async function copyShare() {
     try {
-      await navigator.clipboard.writeText(`${window.location.origin}/polls/${createdId}`)
-      setShareFeedback('Link copied.')
-      window.setTimeout(() => setShareFeedback(''), 2500)
+      await navigator.clipboard.writeText(shareUrl)
+      setShareFeedback('Link copied successfully!')
     } catch {
-      setShareFeedback('Copy is unavailable. Open the poll to copy its URL.')
+      setShareFeedback('Unable to copy automatically. Please copy the link manually.')
+    }
+
+    window.setTimeout(() => setShareFeedback(''), 2500)
+  }
+
+  async function sharePoll() {
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: 'Vote in my LivePoll',
+          text: 'Share your opinion by voting in this poll.',
+          url: shareUrl,
+        })
+      } else {
+        await copyShare()
+      }
+    } catch (error) {
+      if (error instanceof Error && error.name !== 'AbortError') {
+        setShareFeedback('Sharing failed. Try copying the link instead.')
+        window.setTimeout(() => setShareFeedback(''), 2500)
+      }
     }
   }
+
 
   if (createdId) {
     return (
       <main className="created-page wrap">
         <div className="success-mark"><Check size={27} /></div>
-        <span className="eyebrow"><span className="eyebrow-line" /> READY TO SHARE</span>
+
+        <span className="eyebrow">
+          <span className="eyebrow-line" /> READY TO SHARE
+        </span>
+
         <h1>Your question<br /><em>is in the room.</em></h1>
-        <p>Send this link to the people whose perspective matters. They can vote without signing in.</p>
+
+        <p>
+          Send this link to the people whose perspective matters.
+          They can vote without signing in.
+        </p>
+
         <div className="share-link-box">
-          <span>{window.location.origin}/polls/{createdId}</span>
-          <button className="button button-primary" onClick={copyShare}><Copy size={16} /> Copy link</button>
+          <span title={shareUrl}>{shareUrl}</span>
+
+          <button
+            type="button"
+            className="button button-primary"
+            onClick={copyShare}
+          >
+            <Copy size={16} /> Copy link
+          </button>
+
+          <button
+            type="button"
+            className="button button-outline"
+            onClick={sharePoll}
+          >
+            <Share2 size={16} /> Share
+          </button>
         </div>
-        {shareFeedback && <div className="inline-notice" role="status">{shareFeedback}</div>}
+
+        {shareFeedback && (
+          <div className="inline-notice" role="status">
+            {shareFeedback}
+          </div>
+        )}
+
+        <section className="created-qr-section">
+          <div className="created-qr-copy">
+            <h2>Scan to vote</h2>
+            <p>Open your camera and scan this QR code to visit your poll.</p>
+          </div>
+
+          <div className="created-qr-card">
+            <QRCodeSVG
+              value={shareUrl}
+              size={180}
+              level="H"
+              marginSize={2}
+              title="QR code for your LivePoll voting link"
+            />
+          </div>
+
+          <button
+            type="button"
+            className="button button-outline"
+            onClick={() => {
+              const svg = document.querySelector(
+                '.created-qr-card svg',
+              ) as SVGSVGElement | null
+
+              if (!svg) return
+
+              const blob = new Blob(
+                [new XMLSerializer().serializeToString(svg)],
+                { type: 'image/svg+xml;charset=utf-8' },
+              )
+              const url = URL.createObjectURL(blob)
+              const link = document.createElement('a')
+              link.href = url
+              link.download = `livepoll-${createdId}-qr.svg`
+              link.click()
+              URL.revokeObjectURL(url)
+            }}
+          >
+            <Download size={16} /> Download QR
+          </button>
+        </section>
+
         <div className="created-actions">
-          <Link className="button button-outline" to={`/polls/${createdId}`}>View your poll <ArrowRight size={16} /></Link>
-          <button className="button button-text" onClick={() => navigate('/dashboard')}>Back to my polls</button>
+          <Link
+            className="button button-outline"
+            to={`/polls/${createdId}`}
+          >
+            View your poll <ArrowRight size={16} />
+          </Link>
+
+          <button
+            type="button"
+            className="button button-text"
+            onClick={() => navigate('/dashboard')}
+          >
+            Back to my polls
+          </button>
         </div>
       </main>
     )
   }
+
 
   return (
     <main className="create-page wrap">

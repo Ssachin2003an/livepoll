@@ -47,7 +47,7 @@ describe('PollPage', () => {
     fireEvent.click(screen.getByRole('radio', { name: /North/ }))
     fireEvent.click(screen.getByRole('button', { name: /Cast your vote/ }))
     expect(await screen.findByText('Your vote is counted')).toBeInTheDocument()
-    expect(apiMock.vote).toHaveBeenCalledWith('poll-1', 'north')
+    expect(apiMock.vote).toHaveBeenCalledWith('poll-1', ['north'])
 
     const event = { type: 'vote', voteId: 'vote-2', totalVotes: 2, counts: { north: 1, south: 1 }, percentages: { north: 50, south: 50 } }
     act(() => socket.emit(event))

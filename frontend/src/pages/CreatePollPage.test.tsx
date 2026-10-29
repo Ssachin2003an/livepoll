@@ -36,7 +36,7 @@ describe('CreatePollPage', () => {
     fillValidPoll()
     fireEvent.click(screen.getByRole('button', { name: /Create poll/ }))
     await screen.findByText('READY TO SHARE')
-    expect(createPoll).toHaveBeenCalledWith('Which idea should ship first?', ['Search', 'Sharing'])
+    expect(createPoll).toHaveBeenCalledWith( 'Which idea should ship first?', ['Search', 'Sharing'], { anonymous: false, allowMultiple: false, maxSelections: 1, } )
     expect(screen.getByText(`${window.location.origin}/polls/a1b2c3`)).toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /Copy link/ }))
     await waitFor(() => expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/polls/a1b2c3`))
