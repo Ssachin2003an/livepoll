@@ -317,32 +317,32 @@ export function PollPage() {
               {poll.anonymous ? 'Anonymous poll' : 'One ballot per person'} · No sign-in needed
             </span>
           </div>
-        </section>
 
-        <div className="poll-share-card">
-          <span className="eyebrow">SHARE THIS POLL</span>
-          <p>Invite others to vote and see the live results.</p>
+          <div className="poll-share-card">
+            <span className="eyebrow">SHARE THIS POLL</span>
+            <p>Invite others to vote and see the live results.</p>
 
-          <div className="poll-share-link">
-            <span title={shareUrl}>{shareUrl}</span>
+            <div className="poll-share-link">
+              <span title={shareUrl}>{shareUrl}</span>
 
-            <button
-              type="button"
-              className="button button-primary"
-              onClick={copyPollLink}
-            >
-              <Copy size={15} /> Copy link
-            </button>
+              <button
+                type="button"
+                className="button button-primary"
+                onClick={copyPollLink}
+              >
+                <Copy size={15} /> Copy link
+              </button>
 
-            <button
-              type="button"
-              className="button button-outline"
-              onClick={share}
-            >
-              <Share2 size={15} /> Share
-            </button>
+              <button
+                type="button"
+                className="button button-outline"
+                onClick={share}
+              >
+                <Share2 size={15} /> Share
+              </button>
+            </div>
           </div>
-        </div>
+        </section>
 
         <aside className="results-panel">
           <div className="results-head">
